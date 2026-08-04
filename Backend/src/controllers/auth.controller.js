@@ -413,3 +413,19 @@ export const resendRegistrationOtp = async (req, res) => {
     });
   }
 };
+
+export const healthCheck = async function (req, res) {
+    try {
+        return res.status(200).json({
+            success: true,
+            message: "Server is healthy",
+            timestamp: new Date().toISOString(),
+            uptime: process.uptime()
+        });
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: "Health check failed"
+        });
+    }
+};
