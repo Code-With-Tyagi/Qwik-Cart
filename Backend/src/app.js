@@ -24,11 +24,6 @@ app.use(cookieParser());
 app.use(
     cors({
         origin: [
-            "http://localhost",
-            "http://localhost:5173",
-            "http://localhost:80",
-            "http://127.0.0.1",
-            "http://127.0.0.1:5173",
             "https://qwikcart-frontend.onrender.com"
         ],
         credentials: true,
