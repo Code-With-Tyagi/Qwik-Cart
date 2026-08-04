@@ -1,0 +1,12 @@
+.env
+**/.env
+
+**/node_modules/
+
+build/
+**/build/
+
+**/dist/
+
+*.pid
+Thumbs.db
