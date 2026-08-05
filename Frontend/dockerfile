@@ -12,6 +12,10 @@ RUN npm ci
 # Copy application source
 COPY . .
 
+# Build-time variable for Vite
+ARG VITE_RAZORPAY_KEY_ID
+ENV VITE_RAZORPAY_KEY_ID=$VITE_RAZORPAY_KEY_ID
+
 # Build the React application
 RUN npm run build
 
