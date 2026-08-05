@@ -533,7 +533,7 @@ const ProductDescription = () => {
                                         })
                                     }}
                                     disabled={product.stock === 0}
-                                    className={`flex-1 flex items-center justify-center gap-2 bg-[#ff9f00] text-white h-14 lg:h-12 rounded shadow-md text-base font-semibold transition-all duration-200 hover:bg-[#f39800] focus:outline-none cursor-pointer disabled:bg-gray-400 disabled:cursor-not-allowed ${isCartAnimating ? "scale-95" : "scale-100"}`}
+                                    className={`flex-1 flex items-center justify-center gap-2 bg-[#ff9f00] text-white py-3.5 sm:py-3 rounded shadow-md text-base font-semibold transition-all duration-200 hover:bg-[#f39800] focus:outline-none cursor-pointer disabled:bg-gray-400 disabled:cursor-not-allowed ${isCartAnimating ? "scale-95" : "scale-100"}`}
                                 >
                                     <svg className="w-6 h-6 lg:w-5 lg:h-5" fill="currentColor" viewBox="0 0 20 20">
                                         <path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" />
@@ -543,7 +543,7 @@ const ProductDescription = () => {
 
                                 <button
                                     onClick={() => toggleWishlist(product._id)}
-                                    className={`flex-1 flex items-center justify-center gap-2 h-14 lg:h-12 rounded shadow-md text-base font-semibold transition-all duration-200 border focus:outline-none cursor-pointer active:scale-95 ${isWishlisted
+                                    className={`flex-1 flex items-center justify-center gap-2 py-3.5 sm:py-3 rounded shadow-md text-base font-semibold transition-all duration-200 border focus:outline-none cursor-pointer active:scale-95 ${isWishlisted
                                         ? "bg-white border-gray-300 text-[#ff4343]"
                                         : "bg-white border-gray-300 text-[#212121] hover:bg-gray-50"
                                         }`}
