@@ -164,9 +164,25 @@ const Checkout = () => {
 
             const selectedAddressDetails = addresses.find(a => a._id === selectedAddressId);
 
+            const razorpayKeyId = import.meta.env.VITE_RAZORPAY_KEY_ID;
+            if (!razorpayKeyId) {
+                toast.error('Payment configuration error: Razorpay API key is missing.', {
+                    position: "top-right",
+                    autoClose: 1000,
+                    hideProgressBar: false,
+                    closeOnClick: false,
+                    pauseOnHover: true,
+                    draggable: true,
+                    theme: "dark",
+                    transition: Zoom,
+                });
+                setIsSubmitting(false);
+                return;
+            }
+
             // OPEN CHECKOUT
             const options = {
-                key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+                key: razorpayKeyId,
                 amount: razorpayOrder.amount,
                 currency: razorpayOrder.currency || "INR",
                 name: "QwikCart",
