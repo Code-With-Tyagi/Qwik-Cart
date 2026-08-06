@@ -1,31 +1,7 @@
-import nodemailer from "nodemailer";
 import dotenv from "dotenv";
+import brevoApi from "../api/brevo.api.js";
 
 dotenv.config();
-
-import dns from "dns";
-
-dns.setDefaultResultOrder("ipv4first");
-
-const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 587,
-    secure: false,
-    requireTLS: true,
-    auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-    },
-});
-
-// Verify connection
-transporter.verify((error, success) => {
-    if (error) {
-        console.log("Email server connection failed:", error);
-    } else {
-        console.log("Email server ready");
-    }
-});
 
 const sendEmail = async (to, subject, text, html) => {
     try {
@@ -35,19 +11,30 @@ const sendEmail = async (to, subject, text, html) => {
             throw new Error("Recipient email address is required.");
         }
 
-        const info = await transporter.sendMail({
-            from: `"Qwik Cart" <${process.env.EMAIL_USER}>`,
-            to: recipient,
-            subject,
-            text,
-            html
-        });
+        // Standard Brevo v3 API payload for transactional emails
+        const payload = {
+            sender: {
+                name: "Qwik Cart",
+                email: process.env.EMAIL_USER, // Note: This email MUST be verified in your Brevo account
+            },
+            to: [
+                { email: recipient }
+            ],
+            subject: subject,
+            textContent: text,
+            htmlContent: html
+        };
 
-        console.log("Message Sent:", info.messageId);
-        return info;
+        // Assuming brevoApi is configured as an Axios instance pointing to https://api.brevo.com/v3
+        // If your brevoApi uses the official @getbrevo/brevo SDK instead, change this line to: 
+        // await brevoApi.sendTransacEmail(payload);
+        const response = await brevoApi.post("/smtp/email", payload);
+
+        console.log("Message Sent successfully to:", recipient);
+        return response;
 
     } catch (error) {
-        console.error("Email sending failed:", error);
+        console.error("Email sending failed:", error?.response?.data || error.message || error);
         throw error;
     }
 };
