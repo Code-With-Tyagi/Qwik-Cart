@@ -17,6 +17,7 @@ export const createOrderApi = async function (payload) {
 export const getAllOrdersApi = async function () {
     try {
         const response = await orderApi.get("/allOrders");
+        console.log(response);
         return response.data;
     } catch (err) {
         throw err;

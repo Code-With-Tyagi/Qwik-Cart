@@ -84,7 +84,7 @@ const AdminOrders = () => {
     if (searchQuery.trim() !== '') {
       const lowerQuery = searchQuery.toLowerCase();
       output = output.filter(order => {
-        const customerName = order.userId?.name || order.address?.fullName || '';
+        const customerName = order.userId?.name || resolveAddress(order)?.fullName || '';
         const customerEmail = order.userId?.email || '';
         return (
           order._id.toLowerCase().includes(lowerQuery) ||
@@ -115,6 +115,7 @@ const AdminOrders = () => {
 
   // Handlers
   const handleViewOrder = (order) => {
+    console.log(order);
     setSelectedOrder(order);
     setIsViewModalOpen(true);
   };
@@ -155,10 +156,10 @@ const AdminOrders = () => {
       "Order Status",
     ]
 
-    const rows = reduxOrders.map((order, index) => [
+    const rows = (Array.isArray(reduxOrders) ? reduxOrders : (reduxOrders.orderDetails || [])).map((order, index) => [
       index + 1,
       order._id,
-      order.userId.email,
+      order.userId?.email || 'N/A',
       `₹${Number(order.totalAmount).toLocaleString("en-US", {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
@@ -202,6 +203,12 @@ const AdminOrders = () => {
     if (!dateString) return 'N/A';
     const options = { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
     return new Date(dateString).toLocaleDateString('en-US', options);
+  };
+
+  // Resolve address from multiple possible shapes returned by backend
+  const resolveAddress = (order) => {
+    if (!order) return null;
+    return order.addressId || order.address || order.shippingAddress || null;
   };
 
   return (
@@ -355,7 +362,7 @@ const AdminOrders = () => {
                         </div>
                         <div className="flex flex-col min-w-0">
                           <span className="font-semibold text-slate-700 truncate">
-                            {order.userId?.name || order.address?.fullName || 'Guest User'}
+                            {order.userId?.name || resolveAddress(order)?.fullName || 'Guest User'}
                           </span>
                           <span className="text-[11px] text-slate-500 truncate">
                             {order.userId?.email || 'No email provided'}
@@ -515,7 +522,7 @@ const AdminOrders = () => {
                     </h4>
                     <div>
                       <p className="font-bold text-slate-800 text-sm">
-                        {selectedOrder.userId?.name || selectedOrder.address?.fullName || 'Guest User'}
+                        {selectedOrder.userId?.name || resolveAddress(selectedOrder)?.fullName || 'Guest User'}
                       </p>
                       <p className="text-sm text-slate-600 mt-1">
                         {selectedOrder.userId?.email || 'No email provided'}
@@ -529,10 +536,12 @@ const AdminOrders = () => {
                       <MdLocationOn size={16} /> Shipping Address
                     </h4>
                     <div className="text-sm text-slate-600 space-y-1">
-                      <p className="font-bold text-slate-800">{selectedOrder.address?.fullName}</p>
-                      <p className="whitespace-pre-line">{selectedOrder.address?.street}</p>
-                      <p>{selectedOrder.address?.city}, {selectedOrder.address?.postalCode}</p>
-                      <p>{selectedOrder.address?.country}</p>
+                      <p className="font-bold text-slate-800">{resolveAddress(selectedOrder)?.fullName || 'N/A'}</p>
+                      <p className="whitespace-pre-line">{resolveAddress(selectedOrder)?.addressLine1 || resolveAddress(selectedOrder)?.street || ''}</p>
+                      {resolveAddress(selectedOrder)?.addressLine2 && <p>{resolveAddress(selectedOrder)?.addressLine2}</p>}
+                      <p>{resolveAddress(selectedOrder)?.city || ''}{resolveAddress(selectedOrder)?.pincode ? `, ${resolveAddress(selectedOrder)?.pincode}` : resolveAddress(selectedOrder)?.postalCode ? `, ${resolveAddress(selectedOrder)?.postalCode}` : ''}</p>
+                      <p>{resolveAddress(selectedOrder)?.state || ''}{resolveAddress(selectedOrder)?.state && resolveAddress(selectedOrder)?.country ? ', ' : ''}{resolveAddress(selectedOrder)?.country || ''}</p>
+                      {resolveAddress(selectedOrder)?.mobileNumber && <p className="mt-2 font-medium">Phone: {resolveAddress(selectedOrder)?.mobileNumber}</p>}
                     </div>
                   </div>
                 </div>

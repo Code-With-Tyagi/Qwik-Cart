@@ -115,9 +115,13 @@ export const getOrders = async (req, res) => {
         const orders = await orderModel
             .find({})
             .populate("userId", "name email")
+            .populate("addressId")
             .populate({
-                path: "items.productId", select: ` title brand category price stock images availabilityStatus totalSold `
-            })
+                path: "items.productId",
+                select: "title brand category price stock images availabilityStatus totalSold"
+            });
+
+            console.log(orders);
 
         return res.status(200).json({
             success: true,
